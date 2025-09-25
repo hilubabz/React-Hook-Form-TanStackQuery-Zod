@@ -33,8 +33,24 @@ app.post("/addData", async (req, res) => {
   }
 });
 
+app.get('/fetchData',async (req,res)=>{
+  try{
+    const result=await Form.findOne()
+    if(result){
+      res.json({success:true,message:'Data fetched successfully',data:result},{status:200})
+    }
+    else{
+      res.json({success:false,message:'Failed to fetch data'},{status:400})
+    }
+  }
+  catch(e){
+    console.log(e)
+      res.json({success:false,message:e.message},{status:500})
+  }
+})
+
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}`);
   mongoose
     .connect("mongodb://localhost:27017/ReactHookForm")
     .then(() => {

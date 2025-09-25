@@ -1,142 +1,20 @@
-// import { useForm, type SubmitHandler } from "react-hook-form";
-// import axios from "axios";
-
-// type Gender = "male" | "female";
-
-// type FormInput = {
-//   name: string;
-//   age: number;
-//   email: string;
-//   phone: number;
-//   address: string;
-//   gender: Gender;
-// };
-// // function Input(props: UseControllerProps<FormInput>) {
-// //   const { field, fieldState } = useController(props)
-
-// //   return (
-// //     <div>
-// //       <label>{props.name}</label>
-// //       <input {...field} placeholder={props.name}/>
-// //       <p>{fieldState.isTouched && "Touched"}</p>
-// //       <p>{fieldState.isDirty && "Dirty"}</p>
-// //       <p>{fieldState.invalid ? "invalid" : "valid"}</p>
-// //     </div>
-// //   )
-// // }
-// export default function App() {
-//   const {
-//     register,
-//     handleSubmit,
-//     watch,
-//     formState: { errors, dirtyFields, touchedFields },
-//   } = useForm<FormInput>({ mode: "onChange" });
-
-//   const onSubmit: SubmitHandler<FormInput> = async (data) => {
-//     console.log(data);
-//     try {
-//       const res = await axios.post("http://localhost:5000/addData", data);
-//       if (res.data.success) {
-//         alert(res.data.message);
-//       } else {
-//         alert(res.data.message);
-//       }
-//     } catch (e) {
-//       console.log(e);
-//     }
-//   };
-//   // const onSubmit=(data:FormInput)=>{
-//   //   console.log(data)
-//   // }
-//   const watchedName = watch("name");
-
-//   return (
-//     <>
-//       <div className="font-semibold text-3xl text-center">React Hook Form</div>
-//       <form onSubmit={handleSubmit(onSubmit)}>
-//         <div className="flex item-center justify-center">
-//           <label className="text-xl">Name</label>
-//           <input
-//             {...register("name", {
-//               required: "Name field is required",
-//               maxLength: {
-//                 value: 20,
-//                 message: "Name cannot exceed 20 characters",
-//               },
-//             })}
-//             className="border-1"
-//           />
-//         </div>
-//         {dirtyFields.name && <p>Field is changed</p>}
-//         {errors.name && <p>{errors.name.message}</p>}
-//         {touchedFields.name && <p>Field is touched</p>}
-//         {/* <Input name="name" control={control} rules={{required:true, maxLength:20}}/> */}
-//         <div className="flex item-center justify-center">
-//         <label>Age:</label>
-//         <input
-//           type="number"
-//           {...register("age", {
-//             required: "Age field is required",
-//             min: { value: 18, message: "Age must at least be 18" },
-//             max: { value: 100, message: "Age cannot be greater than 100" },
-//           })}
-//           className="border-1"
-//         />
-//         </div>
-//         {errors.age && <p>{errors.age.message}</p>}
-//         <div className="flex item-center justify-center">
-//         <label>Email:</label>
-//         <input
-//           type="text"
-//           {...register("email", {
-//             required: "Email field is required",
-//             pattern: {
-//               value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-//               message: "Invalid Email",
-//             },
-//           })}
-//           className="border-1"
-//         />
-//         </div>
-//         {errors.email && <p>{errors.email.message}</p>}
-//         <label>Phone:</label>
-//         <input type="number" {...register("phone")} className="border-1" />
-//         <br />
-//         <label>Address:</label>
-//         <input {...register("address")} className="border-1" />
-//         <br />
-//         <label>Gender:</label>
-//         <input
-//           type="radio"
-//           value="male"
-//           {...register("gender", { required: true })}
-//         />{" "}
-//         Male
-//         <input
-//           type="radio"
-//           value="female"
-//           {...register("gender", { required: true })}
-//         />{" "}
-//         Female
-//         <br />
-//         <input type="submit" />
-//         <div>{watchedName}</div>
-//       </form>
-//     </>
-//   );
-// }
-
 import { IoIosStar } from "react-icons/io";
 import { useForm, type SubmitHandler } from "react-hook-form";
+import axios from "axios";
+import { useState, useEffect } from "react";
 
 export default function App() {
   type Review = "excellent" | "good" | "average" | "poor";
   type Recommend = "yes" | "no";
   type Subscription = "basic" | "premium";
+  interface Social{
+    facebook:string,
+    instagram:string
+  }
   type FormInput = {
     fullName: string;
     email: string;
-    phone: number;
+    phone: number[];
     companyName: string;
     dateOfExperience: string;
     rating: number;
@@ -150,27 +28,52 @@ export default function App() {
     subscription: Subscription;
     period: string;
     card: number;
+    social:Social
   };
-
-  const dummyData={
-    fullName:'Utsarga Manandhar',
-    companyName:'Global Square Company',
-    rating:0,
-  }
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     watch,
-  
-  } = useForm<FormInput>({ mode: "onChange", shouldUnregister:true, defaultValues:dummyData });
+    reset,
+  } = useForm<FormInput>({
+    mode: "onChange",
+    shouldUnregister: true,
+  });
   const rating = watch("rating");
   const subscription = watch("subscription");
 
-  const onSubmit: SubmitHandler<FormInput> = (data) => {
+  const onSubmit: SubmitHandler<FormInput> = async (data) => {
     console.log(data);
+    // try {
+    //   const result = await axios.post("http://localhost:5000/addData", data);
+    //   console.log(result);
+    //   if (result.data.success) {
+    //     alert(result.data.message);
+    //   } else {
+    //     alert(result.data.message);
+    //   }
+    // } catch (e) {
+    //   console.log(e);
+    // }
   };
+//   useEffect(() => {
+//     const fetchData = async () => {
+//       try {
+//         const res = await axios.get("http://localhost:5000/fetchData");
+//         if (res.data.success) {
+//           reset(res.data.data);
+//         } else {
+//           alert(res.data.message);
+//         }
+//       } catch (e) {
+//         alert("Failed to fetch data");
+//         console.log(e);
+//       }
+//     };
+//     fetchData();
+//   }, []);
 
   return (
     <>
@@ -246,20 +149,74 @@ export default function App() {
 
             <div className="mb-6">
               <label className="mb-2 block text-sm font-medium text-gray-700">
-                Phone Number (Optional)
+                Phone Number 1
               </label>
               <input
                 type="text"
-                {...register("phone", {
+                {...register('phone.0', {
                   minLength: { value: 10, message: "Invalid Phone" },
                   maxLength: { value: 10, message: "Invalid Phone" },
                 })}
                 id="phone"
                 className="w-full rounded-md border border-gray-300 p-3 text-sm text-gray-800 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
               />
-              {errors.phone && (
+              {errors.phone?.[0] && (
                 <div className="text-red-700 mt-[6px]">
-                  {errors.phone.message}
+                  {errors.phone?.[0].message}
+                </div>
+              )}
+            </div>
+
+            <div className="mb-6">
+              <label className="mb-2 block text-sm font-medium text-gray-700">
+                Phone Number 2
+              </label>
+              <input
+                type="text"
+                {...register("phone.1", {
+                  minLength: { value: 10, message: "Invalid Phone" },
+                  maxLength: { value: 10, message: "Invalid Phone" },
+                })}
+                id="phone"
+                className="w-full rounded-md border border-gray-300 p-3 text-sm text-gray-800 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
+              />
+              {errors.phone?.[1] && (
+                <div className="text-red-700 mt-[6px]">
+                  {errors.phone?.[1].message}
+                </div>
+              )}
+            </div>
+
+            <div className="mb-6">
+              <label className="mb-2 block text-sm font-medium text-gray-700">
+                Facebook
+              </label>
+              <input
+                type="text"
+                {...register("social.facebook",{required:'Please input you facebook URL'})}
+                id="phone"
+                className="w-full rounded-md border border-gray-300 p-3 text-sm text-gray-800 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
+              />
+              {errors.social?.facebook && (
+                <div className="text-red-700 mt-[6px]">
+                  {errors.social?.facebook.message}
+                </div>
+              )}
+            </div>
+
+            <div className="mb-6">
+              <label className="mb-2 block text-sm font-medium text-gray-700">
+                Instagram
+              </label>
+              <input
+                type="text"
+                {...register("social.instagram",{required:'Please input your Instagram URL'})}
+                id="phone"
+                className="w-full rounded-md border border-gray-300 p-3 text-sm text-gray-800 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
+              />
+              {errors.social?.instagram && (
+                <div className="text-red-700 mt-[6px]">
+                  {errors.social?.instagram.message}
                 </div>
               )}
             </div>
@@ -502,28 +459,36 @@ export default function App() {
               <>
                 <div className="mb-6">
                   <div className="mb-2">Please select subscription period</div>
-                  <select className="w-full rounded-md border border-gray-300 p-3 text-sm text-gray-800 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none" {...register('period', {required:'Please select the period of subscription'})}>
-                    <option value='1 month'>1 month</option>        
-                    <option value='6 month'>6 month</option>
-                    <option value='1 year'>1 year</option>
+                  <select
+                    className="w-full rounded-md border border-gray-300 p-3 text-sm text-gray-800 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
+                    {...register("period", {
+                      required: "Please select the period of subscription",
+                    })}
+                  >
+                    <option value="1 month">1 month</option>
+                    <option value="6 month">6 month</option>
+                    <option value="1 year">1 year</option>
                   </select>
                   {errors.period && (
-                <div className="text-red-700 mt-[6px]">
-                  {errors.period.message}
-                </div>
-              )}
+                    <div className="text-red-700 mt-[6px]">
+                      {errors.period.message}
+                    </div>
+                  )}
                 </div>
                 <div className="mb-6">
                   <div className="mb-2">Card Information</div>
                   <input
                     type="text"
-                    className="w-full rounded-md border border-gray-300 p-3 text-sm text-gray-800 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none" {...register('card', {required:'Please enter your card number'})}
+                    className="w-full rounded-md border border-gray-300 p-3 text-sm text-gray-800 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
+                    {...register("card", {
+                      required: "Please enter your card number",
+                    })}
                   />
                   {errors.card && (
-                <div className="text-red-700 mt-[6px]">
-                  {errors.card.message}
-                </div>
-              )}
+                    <div className="text-red-700 mt-[6px]">
+                      {errors.card.message}
+                    </div>
+                  )}
                 </div>
               </>
             )}

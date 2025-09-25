@@ -1,12 +1,8 @@
 const mongoose=require('mongoose')
 
 const formSchema=mongoose.Schema({
-    name:{
+    fullName:{
         type:String,
-        required:true
-    },
-    age:{
-        type:Number,
         required:true
     },
     email:{
@@ -15,15 +11,59 @@ const formSchema=mongoose.Schema({
     },
     phone:{
         type:Number,
-        required:true,
+        required:true
     },
-    address:{
+    companyName:{
         type:String,
         required:true
     },
-    gender:{
+    dateOfExperience:{
+        type:String, 
+        required:true
+    },
+    rating:{
+        type:Number,
+        required:true
+    },
+    rateQuality:{
         type:String,
         required:true
+    },
+    rateSupport:{
+        type:String,
+        required:true
+    },
+    recommend:{
+        type:String,
+        required:true
+    },
+    like:{
+        type:String, 
+        required:true
+    },
+    improvement:{
+        type:String,
+        required:true
+    },
+    contactFollowUp:{
+        type:Boolean,
+        required:true
+    },
+    shareFeedback:{
+        type:Boolean,
+        required:true
+    },
+    subscription:{
+        type:String,
+        required:true
+    },
+    period:{
+        type:String, 
+        required:false
+    },
+    card:{
+        type:Number,
+        required:false
     }
 })
 
