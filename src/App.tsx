@@ -127,14 +127,12 @@
 // }
 
 import { IoIosStar } from "react-icons/io";
-
-import { useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
-// import { IoIosStar } from "react-icons/io";
 
 export default function App() {
   type Review = "excellent" | "good" | "average" | "poor";
   type Recommend = "yes" | "no";
+  type Subscription = "basic" | "premium";
   type FormInput = {
     fullName: string;
     email: string;
@@ -149,16 +147,27 @@ export default function App() {
     improvement: string;
     contactFollowUp: boolean;
     shareFeedback: boolean;
+    subscription: Subscription;
+    period: string;
+    card: number;
   };
 
-  const [star, setStar] = useState<number>(0);
+  const dummyData={
+    fullName:'Utsarga Manandhar',
+    companyName:'Global Square Company',
+    rating:0,
+  }
+
   const {
     register,
     handleSubmit,
     formState: { errors },
     watch,
-  } = useForm<FormInput>({ mode: "onChange" });
-  const rating = watch("rating", 0);
+  
+  } = useForm<FormInput>({ mode: "onChange", shouldUnregister:true, defaultValues:dummyData });
+  const rating = watch("rating");
+  const subscription = watch("subscription");
+
   const onSubmit: SubmitHandler<FormInput> = (data) => {
     console.log(data);
   };
@@ -282,7 +291,10 @@ export default function App() {
                 type="date"
                 {...register("dateOfExperience", {
                   required: "Date of Experience is required",
-                  max:{value:new Date().toISOString(),message:'Date cannot be in future'}
+                  max: {
+                    value: new Date().toISOString(),
+                    message: "Date cannot be in future",
+                  },
                 })}
                 id="experience-date"
                 className="w-full rounded-md border border-gray-300 p-3 text-sm text-gray-800 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
@@ -458,6 +470,63 @@ export default function App() {
               )}
             </div>
 
+            <div className="mb-6">
+              <div className="mb-2">Choose Your Subscription</div>
+              <div className="flex space-x-4">
+                <div className="flex space-x-2">
+                  <input
+                    type="radio"
+                    {...register("subscription", {
+                      required: "Please select a subscription plan",
+                    })}
+                    value="basic"
+                  />
+                  <label className="text-sm text-gray-600">Basic</label>
+                </div>
+                <div className="flex space-x-2">
+                  <input
+                    type="radio"
+                    {...register("subscription")}
+                    value="premium"
+                  />
+                  <label className="text-sm text-gray-600">Premium</label>
+                </div>
+              </div>
+              {errors.subscription && (
+                <div className="text-red-700 mt-[6px]">
+                  {errors.subscription.message}
+                </div>
+              )}
+            </div>
+            {subscription == "premium" && (
+              <>
+                <div className="mb-6">
+                  <div className="mb-2">Please select subscription period</div>
+                  <select className="w-full rounded-md border border-gray-300 p-3 text-sm text-gray-800 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none" {...register('period', {required:'Please select the period of subscription'})}>
+                    <option value='1 month'>1 month</option>        
+                    <option value='6 month'>6 month</option>
+                    <option value='1 year'>1 year</option>
+                  </select>
+                  {errors.period && (
+                <div className="text-red-700 mt-[6px]">
+                  {errors.period.message}
+                </div>
+              )}
+                </div>
+                <div className="mb-6">
+                  <div className="mb-2">Card Information</div>
+                  <input
+                    type="text"
+                    className="w-full rounded-md border border-gray-300 p-3 text-sm text-gray-800 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none" {...register('card', {required:'Please enter your card number'})}
+                  />
+                  {errors.card && (
+                <div className="text-red-700 mt-[6px]">
+                  {errors.card.message}
+                </div>
+              )}
+                </div>
+              </>
+            )}
             {/* <!-- Open-Ended Feedback --> */}
             <div className="mb-6">
               <label className="mb-2 block text-sm font-medium text-gray-700">
