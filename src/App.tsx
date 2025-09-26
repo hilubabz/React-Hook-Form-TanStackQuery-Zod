@@ -1,37 +1,12 @@
 import { IoIosStar } from "react-icons/io";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import axios from "axios";
 import { useState, useEffect } from "react";
+import type { FormInput } from "./services/form.types";
+import useFormData from "./hooks/useFormData";
+import useAddFormData from "./hooks/useAddFormData";
 
 export default function App() {
   const [next, setNext] = useState<boolean>(false);
-  const [savedData, setSavedData] = useState<FormInput>();
-  type Review = "excellent" | "good" | "average" | "poor";
-  type Recommend = "yes" | "no";
-  type Subscription = "basic" | "premium";
-  interface Social {
-    facebook: string;
-    instagram: string;
-  }
-  type FormInput = {
-    fullName: string;
-    email: string;
-    phone: number[];
-    companyName: string;
-    dateOfExperience: string;
-    rating: number;
-    rateQuality: Review;
-    rateSupport: Review;
-    recommend: Recommend;
-    like: string;
-    improvement: string;
-    contactFollowUp: boolean;
-    shareFeedback: boolean;
-    subscription: Subscription;
-    period: string;
-    card: number;
-    social: Social;
-  };
   const Initial = {
     social: {
       facebook: "",
@@ -43,46 +18,44 @@ export default function App() {
     handleSubmit,
     formState: { errors },
     watch,
-    reset,
+    reset
   } = useForm<FormInput>({
     mode: "onChange",
-    shouldUnregister: true,
     defaultValues: Initial,
   });
   const rating = watch("rating");
   const subscription = watch("subscription");
 
-  const onSubmit: SubmitHandler<FormInput> = async (data) => {
-    console.log(data)
-    // try {
-    //   const result = await axios.post("http://localhost:5000/addData", data);
-    //   console.log(result);
-    //   if (result.data.success) {
-    //     alert(result.data.message);
-    //   } else {
-    //     alert(result.data.message);
-    //   }
-    // } catch (e) {
-    //   console.log(e);
-    // }
-  };
-  //   useEffect(() => {
-  //     const fetchData = async () => {
-  //       try {
-  //         const res = await axios.get("http://localhost:5000/fetchData");
-  //         if (res.data.success) {
-  //           reset(res.data.data);
-  //         } else {
-  //           alert(res.data.message);
-  //         }
-  //       } catch (e) {
-  //         alert("Failed to fetch data");
-  //         console.log(e);
-  //       }
-  //     };
-  //     fetchData();
-  //   }, []);
+  const {isPending,data,error}=useFormData()
+  useEffect(()=>{
+    reset(data?.data)
+    // console.log(data)
+  },[data])
+  // const addFormData=useQuery({queryKey:['addData'],
+  //   queryFn:()=>
+  //       axios.post('http://localhost:5000/addData')
+  //       .then((res)=>res.data)
+  // })
 
+  const addFormDatas=useAddFormData()
+  const onSubmit: SubmitHandler<FormInput> = async (data) => {
+    if(!next){
+      setNext(true)
+    }
+    else if(subscription=='basic'){
+        const {card,period,...rest}=data
+        addFormDatas.mutate(rest)
+        setNext(false)
+    }
+    else{
+        console.log(data)
+        addFormDatas.mutate(data)
+        setNext(false)
+    }
+  };
+
+  if(isPending) return <div>Loading...</div>
+  if(error) return <div>An error has occured {error.message}</div>
   return (
     <>
       <div className="flex items-center justify-center p-4 sm:p-12">
@@ -106,7 +79,8 @@ export default function App() {
                 fields are marked with *.
               </p>
             </div>
-            <div className="w-full flex justify-center items-center mb-6">
+            <div className="w-full flex justify-center items-center mb-6 relative">
+              {next&&(<div className="absolute left-0 text-gray-500 text-sm cursor-pointer" onClick={()=>setNext(false)}>{'< Back'}</div>)}
                 <div className={`h-10 w-10 rounded-full border-1 flex items-center justify-center ${next?'':"bg-blue-500 text-white"}`}>1</div>
                 <div className="w-10 border-1"></div>
                 <div className={`h-10 w-10 rounded-full border-1 flex items-center justify-center ${next?'bg-blue-500 text-white':''}`}>2</div>
@@ -309,6 +283,7 @@ export default function App() {
                             required: true,
                             valueAsNumber: true,
                           })}
+                          checked={rating==val?true:false}
                           className="hidden"
                         />
                         <IoIosStar
@@ -596,7 +571,7 @@ export default function App() {
 
                 {/* <!-- Submit Button --> */}
                 <button
-                    onClick={()=>setNext(true)}
+                  type="submit"
                   className="w-full rounded-md bg-indigo-600 px-6 py-3 font-medium text-white shadow-sm transition duration-300 hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none"
                 >
                   Next
@@ -609,3 +584,17 @@ export default function App() {
     </>
   );
 }
+
+
+// import { Routes, Route } from "react-router-dom";
+// import Form1 from "./Form1";
+// import Form2 from "./Form2";
+
+// export default function App(){
+//     return(
+//         <Routes>
+//             <Route path="/" element={<Form1/>}/>
+//             <Route path="/form2" element={<Form2/>}/>
+//         </Routes>
+//     )
+// }

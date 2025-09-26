@@ -10,7 +10,7 @@ const formSchema=mongoose.Schema({
         required:true
     },
     phone:{
-        type:Number,
+        type:Array,
         required:true
     },
     companyName:{
@@ -64,8 +64,12 @@ const formSchema=mongoose.Schema({
     card:{
         type:Number,
         required:false
+    },
+    social:{
+        type:Object,
+        required:true
     }
-})
+}, { timestamps: true })
 
 const Form = mongoose.model("Form", formSchema);
 

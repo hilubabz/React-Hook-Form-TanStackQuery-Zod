@@ -1,12 +1,12 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const cors=require('cors')
+const cors = require("cors");
 const app = express();
 const PORT = 5000;
 const Form = require("./models/form.model");
 
 app.use(express.json());
-app.use(cors())
+app.use(cors());
 
 app.get("/", (req, res) => {
   res.send("Hello, Express!");
@@ -33,21 +33,26 @@ app.post("/addData", async (req, res) => {
   }
 });
 
-app.get('/fetchData',async (req,res)=>{
-  try{
-    const result=await Form.findOne()
-    if(result){
-      res.json({success:true,message:'Data fetched successfully',data:result},{status:200})
+app.get("/fetchData", async (req, res) => {
+  try {
+    const result = await Form.findOne().sort({ _id: -1 }).select("-_id");
+
+    if (result) {
+      res.json(
+        { success: true, message: "Data fetched successfully", data: result },
+        { status: 200 }
+      );
+    } else {
+      res.json(
+        { success: false, message: "Failed to fetch data" },
+        { status: 400 }
+      );
     }
-    else{
-      res.json({success:false,message:'Failed to fetch data'},{status:400})
-    }
+  } catch (e) {
+    console.log(e);
+    res.json({ success: false, message: e.message }, { status: 500 });
   }
-  catch(e){
-    console.log(e)
-      res.json({success:false,message:e.message},{status:500})
-  }
-})
+});
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
