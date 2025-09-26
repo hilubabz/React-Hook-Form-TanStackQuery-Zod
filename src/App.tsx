@@ -1,35 +1,27 @@
 import { IoIosStar } from "react-icons/io";
-import { useForm, type SubmitHandler } from "react-hook-form";
+import { FormProvider, useForm, useWatch, type SubmitHandler } from "react-hook-form";
 import { useState, useEffect } from "react";
 import type { FormInput } from "./services/form.types";
 import useFormData from "./hooks/useFormData";
 import useAddFormData from "./hooks/useAddFormData";
-import { DevTool } from "@hookform/devtools";
+import { FormSchema } from "./services/form.zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
 export default function App() {
   const [next, setNext] = useState<boolean>(false);
-  const Initial = {
-    fullName:'',
-    email:'',
-    social: {
-      facebook: "",
-      instagram: "",
-    },
-  };
   const {
     register,
     handleSubmit,
     formState: { errors },
-    watch,
     trigger,
     reset,
     control
   } = useForm<FormInput>({
     mode: "onChange",
-    defaultValues: Initial,
+    resolver:zodResolver(FormSchema)
   });
-  const rating = watch("rating");
-  const subscription = watch("subscription");
-  console.log(watch())
+  const rating = useWatch({control,name:"rating"});
+  const subscription = useWatch({control,name:"subscription"});
 
   const {isPending,data,error}=useFormData()
   // useEffect(()=>{
@@ -73,7 +65,7 @@ export default function App() {
             alt="Survey Form Illustration"
             className="mb-8 w-full rounded-lg sm:mb-12"
           />
-
+ 
           <form onSubmit={handleSubmit(onSubmit)} noValidate>
             {/* <!-- Title and Description --> */}
             <div className="mb-8 text-center">
@@ -94,7 +86,7 @@ export default function App() {
             {/* <!-- Basic Information --> */}
 
             {next ? (
-              <>
+              <div key={'step2'}>
                 <div className="mb-6">
                   <label className="mb-2 block text-sm font-medium text-gray-700">
                     Facebook
@@ -104,7 +96,7 @@ export default function App() {
                     {...register("social.facebook", {
                       required: "Please input you facebook URL",
                     })}
-                    id="phone"
+                    // id="phone"
                     className="w-full rounded-md border border-gray-300 p-3 text-sm text-gray-800 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
                   />
                   {errors.social?.facebook && (
@@ -123,7 +115,7 @@ export default function App() {
                     {...register("social.instagram", {
                       required: "Please input your Instagram URL",
                     })}
-                    id="phone"
+                    // id="phone"
                     className="w-full rounded-md border border-gray-300 p-3 text-sm text-gray-800 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
                   />
                   {errors.social?.instagram && (
@@ -136,7 +128,7 @@ export default function App() {
                   type="submit"
                   className="w-full rounded-md bg-indigo-600 px-6 py-3 font-medium text-white shadow-sm transition duration-300 hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none"
                 />
-              </>
+              </div>
             ) : (
               <>
                 <div className="mb-6">
@@ -198,7 +190,7 @@ export default function App() {
                       minLength: { value: 10, message: "Invalid Phone" },
                       maxLength: { value: 10, message: "Invalid Phone" },
                     })}
-                    id="phone"
+                    // id="phone"
                     className="w-full rounded-md border border-gray-300 p-3 text-sm text-gray-800 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
                   />
                   {errors.phone?.[0] && (
@@ -218,7 +210,7 @@ export default function App() {
                       minLength: { value: 10, message: "Invalid Phone" },
                       maxLength: { value: 10, message: "Invalid Phone" },
                     })}
-                    id="phone"
+                    // id="phone"
                     className="w-full rounded-md border border-gray-300 p-3 text-sm text-gray-800 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
                   />
                   {errors.phone?.[1] && (
@@ -585,7 +577,8 @@ export default function App() {
               </>
             )}
           </form>
-      <DevTool control={control} /> 
+          
+      {/* <DevTool control={control} />  */}
 
         </div>
       </div>
