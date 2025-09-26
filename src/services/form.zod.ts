@@ -1,5 +1,4 @@
-import { z, ZodType } from 'zod';
-import type { FormInput } from './form.types';
+import { z, } from 'zod';
 
 const Social = z.object({
   facebook: z.string().min(1, { message: 'Facebook is required' }),
@@ -10,20 +9,25 @@ const Review = z.enum(["excellent", "good", "average", "poor"]);
 const Recommend = z.enum(["yes", "no"]);
 const Subscription = z.enum(["basic", "premium"]);
 
-export const FormSchema: ZodType<FormInput> = z.object({
+export const FormSchema= z.object({
   fullName: z.string()
     .min(1, { message: 'Please enter your name' })
     .max(20, { message: 'Name cannot be longer than 20' }),
 
   email: z.string().email({ message: 'Please enter a valid email' }),
 
-  // Assuming you want an array of 2 phone numbers as strings with 10 digits
-  phone: z.array(
-    z.number()
-  ).length(2, { message: 'Two phone numbers are required' }),
+  // Phone as number array; each number must be exactly 10 digits
+phone: z.array(
+  z.number()
+    .refine(val => /^\d{10}$/.test(val), { 
+      message: "Phone number must be exactly 10 digits" 
+    })
+    .transform(val => Number(val))
+).length(2, { message: "Two phone numbers are required" })
+,
 
   companyName: z.string().min(1, { message: 'Company name is required' }),
-
+  
   dateOfExperience: z.string().min(1, { message: 'Please enter a date of experience' }),
 
   rating: z.number().min(1, { message: 'Please select a rating' }),
@@ -33,8 +37,8 @@ export const FormSchema: ZodType<FormInput> = z.object({
   recommend: Recommend,
   subscription: Subscription,
 
-  period: z.string(),
-  card: z.number(),
+  period: z.string().optional(),
+  card: z.number().optional(),
   like: z.string(),
   improvement: z.string(),
   contactFollowUp: z.boolean(),
@@ -42,3 +46,5 @@ export const FormSchema: ZodType<FormInput> = z.object({
 
   social: Social,
 });
+
+export type FormData=z.infer<typeof FormSchema>

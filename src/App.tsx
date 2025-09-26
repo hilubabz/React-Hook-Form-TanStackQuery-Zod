@@ -15,13 +15,16 @@ export default function App() {
     formState: { errors },
     trigger,
     reset,
+    watch,
     control
   } = useForm<FormInput>({
     mode: "onChange",
-    resolver:zodResolver(FormSchema)
+    resolver:zodResolver(FormSchema),
+    defaultValues:{phone:[0,0]}
   });
   const rating = useWatch({control,name:"rating"});
   const subscription = useWatch({control,name:"subscription"});
+  console.log(watch())
 
   const {isPending,data,error}=useFormData()
   // useEffect(()=>{
@@ -138,12 +141,12 @@ export default function App() {
                   <input
                     type="text"
                     {...register("fullName", {
-                      required: "Name is required",
-                      maxLength: {
-                        value: 20,
-                        message:
-                          "Full name cannot be of length greater than 20",
-                      },
+                      // required: "Name is required",
+                      // maxLength: {
+                      //   value: 20,
+                      //   message:
+                      //     "Full name cannot be of length greater than 20",
+                      // },
                     })}
                     id="fullname"
                     className="w-full rounded-md border border-gray-300 p-3 text-sm text-gray-800 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
@@ -185,10 +188,9 @@ export default function App() {
                     Phone Number 1
                   </label>
                   <input
-                    type="text"
+                    type="number"
                     {...register("phone.0", {
-                      minLength: { value: 10, message: "Invalid Phone" },
-                      maxLength: { value: 10, message: "Invalid Phone" },
+                      valueAsNumber:true
                     })}
                     // id="phone"
                     className="w-full rounded-md border border-gray-300 p-3 text-sm text-gray-800 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
@@ -205,11 +207,14 @@ export default function App() {
                     Phone Number 2
                   </label>
                   <input
-                    type="text"
+                    type="number"
                     {...register("phone.1", {
                       minLength: { value: 10, message: "Invalid Phone" },
                       maxLength: { value: 10, message: "Invalid Phone" },
-                    })}
+                      valueAsNumber:true
+                    
+                    },
+                )}
                     // id="phone"
                     className="w-full rounded-md border border-gray-300 p-3 text-sm text-gray-800 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
                   />
