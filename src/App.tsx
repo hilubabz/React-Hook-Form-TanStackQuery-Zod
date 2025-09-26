@@ -4,10 +4,12 @@ import { useState, useEffect } from "react";
 import type { FormInput } from "./services/form.types";
 import useFormData from "./hooks/useFormData";
 import useAddFormData from "./hooks/useAddFormData";
-
+import { DevTool } from "@hookform/devtools";
 export default function App() {
   const [next, setNext] = useState<boolean>(false);
   const Initial = {
+    fullName:'',
+    email:'',
     social: {
       facebook: "",
       instagram: "",
@@ -18,24 +20,21 @@ export default function App() {
     handleSubmit,
     formState: { errors },
     watch,
-    reset
+    trigger,
+    reset,
+    control
   } = useForm<FormInput>({
     mode: "onChange",
     defaultValues: Initial,
   });
   const rating = watch("rating");
   const subscription = watch("subscription");
+  console.log(watch())
 
   const {isPending,data,error}=useFormData()
-  useEffect(()=>{
-    reset(data?.data)
-    // console.log(data)
-  },[data])
-  // const addFormData=useQuery({queryKey:['addData'],
-  //   queryFn:()=>
-  //       axios.post('http://localhost:5000/addData')
-  //       .then((res)=>res.data)
-  // })
+  // useEffect(()=>{
+  //   reset(data?.data)
+  // },[data])
 
   const addFormDatas=useAddFormData()
   const onSubmit: SubmitHandler<FormInput> = async (data) => {
@@ -53,6 +52,13 @@ export default function App() {
         setNext(false)
     }
   };
+
+  const validateNext=async ()=>{
+    const isValid=await trigger()
+    if(isValid){
+      setNext(true)
+    } 
+  }
 
   if(isPending) return <div>Loading...</div>
   if(error) return <div>An error has occured {error.message}</div>
@@ -571,7 +577,7 @@ export default function App() {
 
                 {/* <!-- Submit Button --> */}
                 <button
-                  type="submit"
+                  onClick={validateNext}
                   className="w-full rounded-md bg-indigo-600 px-6 py-3 font-medium text-white shadow-sm transition duration-300 hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none"
                 >
                   Next
@@ -579,6 +585,8 @@ export default function App() {
               </>
             )}
           </form>
+      <DevTool control={control} /> 
+
         </div>
       </div>
     </>
