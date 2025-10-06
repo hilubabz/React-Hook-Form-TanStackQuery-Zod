@@ -1,5 +1,5 @@
 import { IoIosStar } from "react-icons/io";
-import { FormProvider, useForm, useWatch, type SubmitHandler } from "react-hook-form";
+import { useForm, useWatch, type SubmitHandler } from "react-hook-form";
 import { useState, useEffect } from "react";
 import type { FormInput } from "./services/form.types";
 import useFormData from "./hooks/useFormData";
@@ -15,7 +15,7 @@ export default function App() {
     formState: { errors },
     trigger,
     reset,
-    watch,
+    // watch,
     control
   } = useForm<FormInput>({
     mode: "onChange",
