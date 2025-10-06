@@ -8,7 +8,7 @@ export  type Recommend = "yes" | "no";
  export type FormInput = {
     fullName: string;
     email: string;
-    phone: number[];
+    phone: string[];
     companyName: string;
     dateOfExperience: string;
     rating: number;

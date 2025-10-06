@@ -20,16 +20,15 @@ export default function App() {
   } = useForm<FormInput>({
     mode: "onChange",
     resolver:zodResolver(FormSchema),
-    defaultValues:{phone:[0,0]}
   });
   const rating = useWatch({control,name:"rating"});
   const subscription = useWatch({control,name:"subscription"});
-  console.log(watch())
+  // console.log(watch())
 
   const {isPending,data,error}=useFormData()
-  // useEffect(()=>{
-  //   reset(data?.data)
-  // },[data])
+  useEffect(()=>{
+    reset(data?.data)
+  },[data])
 
   const addFormDatas=useAddFormData()
   const onSubmit: SubmitHandler<FormInput> = async (data) => {
@@ -49,10 +48,27 @@ export default function App() {
   };
 
   const validateNext=async ()=>{
-    const isValid=await trigger()
+    const isValid=await trigger([
+  "fullName",
+  "email",
+  "phone.0",
+  "phone.1",
+  "companyName",
+  "dateOfExperience",
+  "rating",
+  "rateQuality",
+  "rateSupport",
+  "recommend",
+  "subscription",
+  "like",
+  "improvement"
+])
     if(isValid){
       setNext(true)
     } 
+    else{
+      console.log('error bhayo')
+    }
   }
 
   if(isPending) return <div>Loading...</div>
@@ -96,9 +112,7 @@ export default function App() {
                   </label>
                   <input
                     type="text"
-                    {...register("social.facebook", {
-                      required: "Please input you facebook URL",
-                    })}
+                    {...register("social.facebook")}
                     // id="phone"
                     className="w-full rounded-md border border-gray-300 p-3 text-sm text-gray-800 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
                   />
@@ -115,9 +129,7 @@ export default function App() {
                   </label>
                   <input
                     type="text"
-                    {...register("social.instagram", {
-                      required: "Please input your Instagram URL",
-                    })}
+                    {...register("social.instagram")}
                     // id="phone"
                     className="w-full rounded-md border border-gray-300 p-3 text-sm text-gray-800 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
                   />
@@ -140,14 +152,7 @@ export default function App() {
                   </label>
                   <input
                     type="text"
-                    {...register("fullName", {
-                      // required: "Name is required",
-                      // maxLength: {
-                      //   value: 20,
-                      //   message:
-                      //     "Full name cannot be of length greater than 20",
-                      // },
-                    })}
+                    {...register("fullName")}
                     id="fullname"
                     className="w-full rounded-md border border-gray-300 p-3 text-sm text-gray-800 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
                   />
@@ -164,14 +169,7 @@ export default function App() {
                   </label>
                   <input
                     type="email"
-                    {...register("email", {
-                      required: "Email is required",
-                      pattern: {
-                        value:
-                          /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                        message: "Invalid Email",
-                      },
-                    })}
+                    {...register("email")}
                     id="email"
                     className="w-full rounded-md border border-gray-300 p-3 text-sm text-gray-800 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
                     required
@@ -188,10 +186,10 @@ export default function App() {
                     Phone Number 1
                   </label>
                   <input
-                    type="number"
-                    {...register("phone.0", {
-                      valueAsNumber:true
-                    })}
+                    {...register("phone.0")}
+                    onInput={(e)=>{
+                      e.currentTarget.value=e.currentTarget.value.replace(/\D/g,"")
+                    }}
                     // id="phone"
                     className="w-full rounded-md border border-gray-300 p-3 text-sm text-gray-800 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
                   />
@@ -207,14 +205,10 @@ export default function App() {
                     Phone Number 2
                   </label>
                   <input
-                    type="number"
-                    {...register("phone.1", {
-                      minLength: { value: 10, message: "Invalid Phone" },
-                      maxLength: { value: 10, message: "Invalid Phone" },
-                      valueAsNumber:true
-                    
-                    },
-                )}
+                    onInput={(e)=>{
+                      e.currentTarget.value=e.currentTarget.value.replace(/\D/g,"")
+                    }}
+                    {...register("phone.1")}
                     // id="phone"
                     className="w-full rounded-md border border-gray-300 p-3 text-sm text-gray-800 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
                   />
@@ -231,9 +225,7 @@ export default function App() {
                   </label>
                   <input
                     type="text"
-                    {...register("companyName", {
-                      required: "Company name is required",
-                    })}
+                    {...register("companyName")}
                     id="company"
                     className="w-full rounded-md border border-gray-300 p-3 text-sm text-gray-800 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
                   />
@@ -250,13 +242,7 @@ export default function App() {
                   </label>
                   <input
                     type="date"
-                    {...register("dateOfExperience", {
-                      required: "Date of Experience is required",
-                      max: {
-                        value: new Date().toISOString(),
-                        message: "Date cannot be in future",
-                      },
-                    })}
+                    {...register("dateOfExperience")}
                     id="experience-date"
                     className="w-full rounded-md border border-gray-300 p-3 text-sm text-gray-800 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
                     required
@@ -282,10 +268,7 @@ export default function App() {
                         <input
                           type="radio"
                           value={val}
-                          {...register("rating", {
-                            required: true,
-                            valueAsNumber: true,
-                          })}
+                          {...register("rating")}
                           checked={rating==val?true:false}
                           className="hidden"
                         />
@@ -305,9 +288,7 @@ export default function App() {
                     <label className="flex items-center">
                       <input
                         type="radio"
-                        {...register("rateQuality", {
-                          required: "Please select a field",
-                        })}
+                        {...register("rateQuality")}
                         value="excellent"
                         className="form-radio h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-500"
                       />
@@ -360,9 +341,7 @@ export default function App() {
                     <label className="flex items-center">
                       <input
                         type="radio"
-                        {...register("rateSupport", {
-                          required: "Please select a field",
-                        })}
+                        {...register("rateSupport")}
                         value="excellent"
                         className="form-radio h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-500"
                       />
@@ -415,9 +394,7 @@ export default function App() {
                     <label className="flex items-center">
                       <input
                         type="radio"
-                        {...register("recommend", {
-                          required: "Please select a field",
-                        })}
+                        {...register("recommend")}
                         value="yes"
                         className="form-radio h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-500"
                       />
@@ -446,9 +423,7 @@ export default function App() {
                     <div className="flex space-x-2">
                       <input
                         type="radio"
-                        {...register("subscription", {
-                          required: "Please select a subscription plan",
-                        })}
+                        {...register("subscription")}
                         value="basic"
                       />
                       <label className="text-sm text-gray-600">Basic</label>
@@ -476,9 +451,7 @@ export default function App() {
                       </div>
                       <select
                         className="w-full rounded-md border border-gray-300 p-3 text-sm text-gray-800 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
-                        {...register("period", {
-                          required: "Please select the period of subscription",
-                        })}
+                        {...register("period")}
                       >
                         <option value="1 month">1 month</option>
                         <option value="6 month">6 month</option>
@@ -495,9 +468,7 @@ export default function App() {
                       <input
                         type="text"
                         className="w-full rounded-md border border-gray-300 p-3 text-sm text-gray-800 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
-                        {...register("card", {
-                          required: "Please enter your card number",
-                        })}
+                        {...register("card")}
                       />
                       {errors.card && (
                         <div className="text-red-700 mt-[6px]">
@@ -513,9 +484,7 @@ export default function App() {
                     What did you like most?
                   </label>
                   <textarea
-                    {...register("like", {
-                      required: "Please write something you liked about us",
-                    })}
+                    {...register("like")}
                     id="liked-most"
                     rows={3}
                     className="w-full rounded-md border border-gray-300 p-3 text-sm text-gray-800 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
@@ -532,9 +501,7 @@ export default function App() {
                     What could we improve?
                   </label>
                   <textarea
-                    {...register("improvement", {
-                      required: "Please insert something",
-                    })}
+                    {...register("improvement")}
                     id="improvement"
                     rows={3}
                     className="w-full rounded-md border border-gray-300 p-3 text-sm text-gray-800 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
@@ -590,17 +557,3 @@ export default function App() {
     </>
   );
 }
-
-
-// import { Routes, Route } from "react-router-dom";
-// import Form1 from "./Form1";
-// import Form2 from "./Form2";
-
-// export default function App(){
-//     return(
-//         <Routes>
-//             <Route path="/" element={<Form1/>}/>
-//             <Route path="/form2" element={<Form2/>}/>
-//         </Routes>
-//     )
-// }

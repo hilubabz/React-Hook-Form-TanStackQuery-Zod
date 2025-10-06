@@ -1,7 +1,7 @@
-import { z, } from 'zod';
+import { z } from 'zod';
 
 const Social = z.object({
-  facebook: z.string().min(1, { message: 'Facebook is required' }),
+  facebook: z.string().url({ message: 'Facebook URL is required' }),
   instagram: z.string().url({ message: 'Invalid Instagram URL' }),
 });
 
@@ -16,16 +16,11 @@ export const FormSchema= z.object({
 
   email: z.string().email({ message: 'Please enter a valid email' }),
 
-  // Phone as number array; each number must be exactly 10 digits
-phone: z.array(
-  z.number()
-    .refine(val => /^\d{10}$/.test(val), { 
-      message: "Phone number must be exactly 10 digits" 
-    })
-    .transform(val => Number(val))
-).length(2, { message: "Two phone numbers are required" })
-,
-
+  // Phone as string array; each string must be exactly 10 digits
+  phone: z.array(
+    z.string()
+      .regex(/^\d{10}$/, { message: "Phone number must be exactly 10 digits" })
+  ).length(2, { message: "Two phone numbers are required" }),
   companyName: z.string().min(1, { message: 'Company name is required' }),
   
   dateOfExperience: z.string().min(1, { message: 'Please enter a date of experience' }),
