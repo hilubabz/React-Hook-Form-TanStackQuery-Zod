@@ -1,7 +1,7 @@
-import axios from "axios";
 import type { FormInput } from "./form.types";
+import api from "./api";
 
 export const addFormData = async (formData: FormInput) => {
-  const res = await axios.post("http://localhost:5000/addData", formData);
+  const res = await api.post("/addData", formData);
   return res.data
 };

@@ -1,6 +1,6 @@
-import axios from "axios"
+import api from "./api"
  
 export const fetchFormData=()=>{
-    return axios.get('http://localhost:5000/fetchData')
+    return api.get('/fetchData')
         .then((res)=>res.data)
 } 
