@@ -242,7 +242,8 @@ export default function App() {
                   </label>
                   <input
                     type="date"
-                    {...register("dateOfExperience")}
+                    {...register("dateOfExperience",{valueAsDate:true})}
+                    
                     id="experience-date"
                     className="w-full rounded-md border border-gray-300 p-3 text-sm text-gray-800 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
                     required

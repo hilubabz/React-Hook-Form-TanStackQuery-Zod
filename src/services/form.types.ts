@@ -10,7 +10,7 @@ export  type Recommend = "yes" | "no";
     email: string;
     phone: string[];
     companyName: string;
-    dateOfExperience: string;
+    dateOfExperience: Date;
     rating: number;
     rateQuality: Review;
     rateSupport: Review;
