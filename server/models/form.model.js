@@ -18,7 +18,7 @@ const formSchema=mongoose.Schema({
         required:true
     },
     dateOfExperience:{
-        type:String, 
+        type:Date, 
         required:true
     },
     rating:{

@@ -26,11 +26,11 @@ export default function App() {
 
   const {isPending,data,error}=useFormData()
   useEffect(()=>{
-    console.log(data)
+    // console.log(data)
     reset(data?.data)
   },[data])
   const date=watch('dateOfExperience')?.toISOString()
-  // console.log(date)
+  console.log(date)
 
   const addFormDatas=useAddFormData()
   const onSubmit: SubmitHandler<FormData> = async (data) => {
@@ -42,14 +42,12 @@ export default function App() {
     //     addFormDatas.mutate(rest)
     //     setNext(false)
     // }
-    // else{
-    //     console.log(data)
-    //     addFormDatas.mutate(data)
-    //     setNext(false)
-    // }
     else{
-      console.log(data)
+        console.log(data)
+        addFormDatas.mutate(data)
+        setNext(false)
     }
+
   };
 
   const validateNext=async ()=>{
