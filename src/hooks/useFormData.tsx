@@ -6,7 +6,7 @@ const useFormData = () => {
       const {isPending,error, data}=useQuery({queryKey:['formData'],
         queryFn:fetchFormData
       })
- return {isPending,error,data}
+ return {isPending,error,data:data?.data}
 }
 
 export default useFormData

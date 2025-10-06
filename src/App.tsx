@@ -14,7 +14,7 @@ export default function App() {
     formState: { errors },
     trigger,
     reset,
-    watch,
+    // watch,
     control
   } = useForm<FormData>({
     mode: "onChange",
@@ -22,15 +22,14 @@ export default function App() {
   });
   const rating = useWatch({control,name:"rating"});
   const subscription = useWatch({control,name:"subscription"});
-  // console.log(watch())
 
   const {isPending,data,error}=useFormData()
   useEffect(()=>{
-    // console.log(data)
-    reset(data?.data)
+    if(data){ 
+      const formattedDate=new Date(data.dateOfExperience).toISOString().split("T")[0]
+      reset({...data,dateOfExperience:formattedDate})
+    }
   },[data])
-  const date=watch('dateOfExperience')?.toISOString()
-  console.log(date)
 
   const addFormDatas=useAddFormData()
   const onSubmit: SubmitHandler<FormData> = async (data) => {
