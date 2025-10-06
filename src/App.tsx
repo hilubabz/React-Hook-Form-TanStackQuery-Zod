@@ -1,10 +1,9 @@
 import { IoIosStar } from "react-icons/io";
 import { useForm, useWatch, type SubmitHandler } from "react-hook-form";
 import { useState, useEffect } from "react";
-import type { FormInput } from "./services/form.types";
 import useFormData from "./hooks/useFormData";
 import useAddFormData from "./hooks/useAddFormData";
-import { FormSchema } from "./services/form.zod";
+import { FormSchema, type FormData } from "./services/form.zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function App() {
@@ -15,9 +14,9 @@ export default function App() {
     formState: { errors },
     trigger,
     reset,
-    // watch,
+    watch,
     control
-  } = useForm<FormInput>({
+  } = useForm<FormData>({
     mode: "onChange",
     resolver:zodResolver(FormSchema),
   });
@@ -27,23 +26,29 @@ export default function App() {
 
   const {isPending,data,error}=useFormData()
   useEffect(()=>{
+    console.log(data)
     reset(data?.data)
   },[data])
+  const date=watch('dateOfExperience')?.toISOString()
+  // console.log(date)
 
   const addFormDatas=useAddFormData()
-  const onSubmit: SubmitHandler<FormInput> = async (data) => {
+  const onSubmit: SubmitHandler<FormData> = async (data) => {
     if(!next){
       setNext(true)
     }
-    else if(subscription=='basic'){
-        const {card,period,...rest}=data
-        addFormDatas.mutate(rest)
-        setNext(false)
-    }
+    // else if(subscription=='basic'){
+    //     const {card,period,...rest}=data
+    //     addFormDatas.mutate(rest)
+    //     setNext(false)
+    // }
+    // else{
+    //     console.log(data)
+    //     addFormDatas.mutate(data)
+    //     setNext(false)
+    // }
     else{
-        console.log(data)
-        addFormDatas.mutate(data)
-        setNext(false)
+      console.log(data)
     }
   };
 
@@ -186,7 +191,7 @@ export default function App() {
                     Phone Number 1
                   </label>
                   <input
-                    {...register("phone.0")}
+                    {...register("phone.0",{valueAsNumber:true})}
                     onInput={(e)=>{
                       e.currentTarget.value=e.currentTarget.value.replace(/\D/g,"")
                     }}
@@ -208,7 +213,7 @@ export default function App() {
                     onInput={(e)=>{
                       e.currentTarget.value=e.currentTarget.value.replace(/\D/g,"")
                     }}
-                    {...register("phone.1")}
+                    {...register("phone.1",{valueAsNumber:true})}
                     // id="phone"
                     className="w-full rounded-md border border-gray-300 p-3 text-sm text-gray-800 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
                   />
@@ -243,7 +248,6 @@ export default function App() {
                   <input
                     type="date"
                     {...register("dateOfExperience",{valueAsDate:true})}
-                    
                     id="experience-date"
                     className="w-full rounded-md border border-gray-300 p-3 text-sm text-gray-800 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
                     required
@@ -452,7 +456,7 @@ export default function App() {
                       </div>
                       <select
                         className="w-full rounded-md border border-gray-300 p-3 text-sm text-gray-800 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
-                        {...register("period")}
+                        {...register("period",{shouldUnregister:true})}
                       >
                         <option value="1 month">1 month</option>
                         <option value="6 month">6 month</option>
@@ -469,7 +473,7 @@ export default function App() {
                       <input
                         type="text"
                         className="w-full rounded-md border border-gray-300 p-3 text-sm text-gray-800 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
-                        {...register("card")}
+                        {...register("card",{shouldUnregister:true})}
                       />
                       {errors.card && (
                         <div className="text-red-700 mt-[6px]">

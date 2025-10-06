@@ -18,28 +18,31 @@ export const FormSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email" }),
 
   // Phone as string array; each string must be exactly 10 digits
-  phone: z
-    .array(
-      z
-        .string()
-        .regex(/^\d{10}$/, {
-          message: "Phone number must be exactly 10 digits",
-        })
-    )
-    .length(2, { message: "Two phone numbers are required" }),
+  phone: z.array(
+    z
+      .preprocess((val: number) => {
+        if (Number.isNaN(val)) {
+          return 0;
+        } else {
+          return Number(val);
+        }
+      }, z.number().min(1, { message: "Phone number is required" }))
+      .refine(
+        (val: number) => {
+          if (val.toString().length != 10) {
+            return false;
+          }
+          else{
+            return true
+          }
+        },
+        { message: "Invalid phone number" }
+      )
+  ),
   companyName: z.string().min(1, { message: "Company name is required" }),
-  // dateOfExperience: z
-  //   .string()
-  //   .min(1, { message: "Please enter a date of experience" })
-  //   .refine(
-  //     (val) => {
-  //       const enteredDate = new Date(val);
-  //       const today = new Date();
-  //       return enteredDate <= today;
-  //     },
-  //     { message: "Date cannot be in the future" }
-  //   ),
-  dateOfExperience:z.date().max(new Date(),{message:'Date cannot be in the future'}),
+  dateOfExperience: z
+    .date()
+    .max(new Date(), { message: "Date cannot be in the future" }),
   rating: z.number().min(1, { message: "Please select a rating" }),
 
   rateQuality: Review,
