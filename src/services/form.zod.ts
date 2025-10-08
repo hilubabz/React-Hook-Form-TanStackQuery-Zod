@@ -43,7 +43,7 @@ export const FormSchema = z.object({
   dateOfExperience: z
     .date()
     .max(new Date(), { message: "Date cannot be in the future" }),
-  rating: z.number().min(1, { message: "Please select a rating" }),
+  rating: z.string().min(1, { message: "Please select a rating" }),
 
   rateQuality: Review,
   rateSupport: Review,
