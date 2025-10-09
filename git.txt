@@ -1,0 +1,7 @@
+new branch: git checkout -b name(feat/name,fix/name,chore/name)
+access branch: git checkout name
+After branch add, commit, push (commit message- branch_name: k garyo )
+After push, github ma create pull request
+
+After merge, git checkout main
+            git pull
