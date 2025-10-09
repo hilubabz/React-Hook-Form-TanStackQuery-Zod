@@ -54,6 +54,37 @@ app.get("/fetchData", async (req, res) => {
   }
 });
 
+app.get('/fetchAllData',async (req,res)=>{
+  try{
+    const result=await Form.find()
+    if(result){
+      res.json({success:true,message:'Data fetched successfully',data:result},{status:200})
+    }
+    else{
+      res.json({success:false,message:'Failed to fetch data'},{status:400})
+    }
+  }
+  catch(e){
+    res.json({success:false,message:e.message},{status:500})
+  }
+})
+
+app.delete('/deleteData/:id',async (req,res)=>{
+  const {id}=req.params
+  try{
+    const result=await Form.findByIdAndDelete(id)
+    if(result){
+      res.json({success:true,message:'Data deleted successfully'},{status:200})
+    }
+    else{
+      res.json({success:false,message:'Failed to delete Data'},{status:400})
+    }
+  }
+  catch(e){
+    res.json({success:false,message:e.message},{status:500})
+  }
+})
+
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
   mongoose
