@@ -1,7 +1,7 @@
 import { IoIosStar } from "react-icons/io";
 import { useForm, useWatch, type SubmitHandler } from "react-hook-form";
-import { useState, useEffect } from "react";
-import useFormData from "./hooks/useFormData";
+// import { useState, useEffect } from "react";
+// import useFormData from "./hooks/useFormData";
 import useAddFormData from "./hooks/useAddFormData";
 import { FormSchema, type FormData } from "./services/form.zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,16 +9,13 @@ import { useNavigate } from "react-router-dom";
 import { parseAsBoolean, useQueryState } from "nuqs";
 
 export default function Form() {
-  const [next, setNext] = useQueryState(
-    "next",
-    parseAsBoolean.withDefault(false)
-  );
+  const [next, setNext] = useQueryState("next",parseAsBoolean.withDefault(false));
   const {
     register,
     handleSubmit,
     formState: { errors },
     trigger,
-    reset,
+    // reset,
     // watch,
     control,
   } = useForm<FormData>({
@@ -29,7 +26,7 @@ export default function Form() {
   const rating = useWatch({ control, name: "rating" });
   const subscription = useWatch({ control, name: "subscription" });
 //   console.log(errors);
-  const { isPending, data, error } = useFormData();
+//   const { isPending, data, error } = useFormData();
 //   useEffect(() => {
 //     if (data) {
 //       const formattedDate = new Date(data.dateOfExperience)
@@ -70,8 +67,8 @@ export default function Form() {
     }
   };
 
-  if (isPending) return <div>Loading...</div>;
-  if (error) return <div>An error has occured {error.message}</div>;
+//   if (isPending) return <div>Loading...</div>;
+//   if (error) return <div>An error has occured {error.message}</div>;
   return (
     <>
       <div className="flex items-center justify-center p-4 sm:p-12">
@@ -83,7 +80,6 @@ export default function Form() {
             alt="Survey Form Illustration"
             className="mb-8 w-full rounded-lg sm:mb-12"
           />
-
           <form onSubmit={handleSubmit(onSubmit)} noValidate>
             {/* <!-- Title and Description --> */}
             <div className="mb-8 text-center">
@@ -491,9 +487,8 @@ export default function Form() {
                     <div className="mb-6">
                       <div className="mb-2">Card Information</div>
                       <input
-                        type="text"
                         className="w-full rounded-md border border-gray-300 p-3 text-sm text-gray-800 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
-                        {...register("card", { shouldUnregister: true })}
+                        {...register("card", { shouldUnregister: true, valueAsNumber:true })}
                       />
                       {errors.card && (
                         <div className="text-red-700 mt-[6px]">

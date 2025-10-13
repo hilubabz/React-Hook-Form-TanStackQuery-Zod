@@ -7,12 +7,16 @@ import {
 import useAllData from "./hooks/useAllData";
 import type { FormData } from "./services/form.zod";
 import useDeleteData from "./hooks/useDeleteData";
+import ModalComponent from "./ModalComponent";
+import Form from "./Form";
+import { useState } from "react";
 
 export default function Data() {
   const formData = useAllData();
   const deleteData=useDeleteData()
   const columnHelper = createColumnHelper<FormData>();
   const data=formData.data
+  const [isOpen,setIsOpen]=useState(false)
 
   const deleteRecord=(data: FormData & { _id?: string })=>{
     if (!data._id) {
@@ -131,6 +135,10 @@ export default function Data() {
           </tr>
         ))}
       </tbody>
+      {!isOpen?(<div onClick={()=>setIsOpen(true)}>Show Modal</div>):
+      (<ModalComponent setIsOpen={setIsOpen}>
+        <Form/>
+      </ModalComponent>)}
     </table>
   );
 }
