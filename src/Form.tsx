@@ -1,12 +1,15 @@
 import { IoIosStar } from "react-icons/io";
 import { useForm, useWatch, type SubmitHandler } from "react-hook-form";
-import { useState, useEffect } from "react";
-import useFormData from "./hooks/useFormData";
+// import { useState, useEffect } from "react";
+// import useFormData from "./hooks/useFormData";
 import useAddFormData from "./hooks/useAddFormData";
 import { FormSchema, type FormData } from "./services/form.zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
 import { parseAsBoolean, useQueryState } from "nuqs";
+import ModalComponent from "./ModalComponent";
+import { useModal } from "./context/ModalContext";
+import Data from "./Data";
 
 export default function Form() {
   const [next, setNext] = useQueryState(
@@ -18,7 +21,7 @@ export default function Form() {
     handleSubmit,
     formState: { errors },
     trigger,
-    reset,
+    // reset,
     // watch,
     control,
   } = useForm<FormData>({
@@ -28,16 +31,16 @@ export default function Form() {
   const navigate = useNavigate();
   const rating = useWatch({ control, name: "rating" });
   const subscription = useWatch({ control, name: "subscription" });
-//   console.log(errors);
-  const { isPending, data, error } = useFormData();
-//   useEffect(() => {
-//     if (data) {
-//       const formattedDate = new Date(data.dateOfExperience)
-//         .toISOString()
-//         .split("T")[0];
-//       reset({ ...data, dateOfExperience: formattedDate });
-//     }
-//   }, [data]);
+  //   console.log(errors);
+  //   const { isPending, data, error } = useFormData();
+  //   useEffect(() => {
+  //     if (data) {
+  //       const formattedDate = new Date(data.dateOfExperience)
+  //         .toISOString()
+  //         .split("T")[0];
+  //       reset({ ...data, dateOfExperience: formattedDate });
+  //     }
+  //   }, [data]);
 
   const addFormDatas = useAddFormData();
   const onSubmit: SubmitHandler<FormData> = async (data) => {
@@ -69,9 +72,13 @@ export default function Form() {
       console.log("error bhayo");
     }
   };
+  const { isOpen, toggleModal } = useModal();
 
-  if (isPending) return <div>Loading...</div>;
-  if (error) return <div>An error has occured {error.message}</div>;
+  const alertFunction=()=>{
+    alert('Confirm Button Clicked')
+  }
+  //   if (isPending) return <div>Loading...</div>;
+  //   if (error) return <div>An error has occured {error.message}</div>;
   return (
     <>
       <div className="flex items-center justify-center p-4 sm:p-12">
@@ -83,7 +90,6 @@ export default function Form() {
             alt="Survey Form Illustration"
             className="mb-8 w-full rounded-lg sm:mb-12"
           />
-
           <form onSubmit={handleSubmit(onSubmit)} noValidate>
             {/* <!-- Title and Description --> */}
             <div className="mb-8 text-center">
@@ -491,9 +497,11 @@ export default function Form() {
                     <div className="mb-6">
                       <div className="mb-2">Card Information</div>
                       <input
-                        type="text"
                         className="w-full rounded-md border border-gray-300 p-3 text-sm text-gray-800 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
-                        {...register("card", { shouldUnregister: true })}
+                        {...register("card", {
+                          shouldUnregister: true,
+                          valueAsNumber: true,
+                        })}
                       />
                       {errors.card && (
                         <div className="text-red-700 mt-[6px]">
@@ -576,6 +584,18 @@ export default function Form() {
           </form>
 
           {/* <DevTool control={control} />  */}
+        <div onClick={() => toggleModal(true)}>Show Modal</div>
+        <ModalComponent
+          isOpen={isOpen}
+          setIsOpen={toggleModal}
+          submitButtonText={"Confirm"}
+          cancelButtonText={"Cancel"}
+          title={"Confirmation"}
+          onSubmit={alertFunction}
+        >
+          {/* <Data /> */}
+          <div>Are you sure</div>
+        </ModalComponent>
         </div>
       </div>
     </>
